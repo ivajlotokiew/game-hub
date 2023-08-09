@@ -1,9 +1,8 @@
 import React from 'react'
 import useGenre from '../hooks/useGenre'
-import { VStack } from '@chakra-ui/react'
 
 const GenreList = () => {
-    const { genre, error, isLoading } = useGenre()
+    const { data: genre, error, isLoading } = useGenre()
     return (
         <ul>
             {genre.map(genre =>
