@@ -12,12 +12,15 @@ interface Props {
   gameQuery: GameQuery | null
 }
 
+const GAMES_PER_PAGE = 20
+
 const GameGrid = ({ gameQuery }: Props) => {
   const [page, setPage] = useState(0)
   const [endpoint, setEndpoint] = useState('/games')
   const { data: games, error, isLoading, count } = useGames(endpoint, gameQuery)
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-  const allPages = Math.ceil(count / games.length)
+  debugger
+  const allPages = Math.ceil(count / GAMES_PER_PAGE)
   const nextBtnDisabled = page === allPages || page === 0 && allPages === 1 || Number.isNaN(allPages) ? true : false
 
   useEffect(() => {
