@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, HStack, SimpleGrid, Text } from "@chakra-ui/react";
 import useGames from "../hooks/useGames";
 import GameCard from "./GameCard";
@@ -13,9 +13,13 @@ interface Props {
 const GameGrid = ({ selectedGenre }: Props) => {
   const [page, setPage] = useState(0)
   const [endpoint, setEndpoint] = useState('/games')
-  const { data: games, error, isLoading, count } = useGames(selectedGenre, endpoint);
+  const { data: games, error, isLoading, count } = useGames(selectedGenre, endpoint)
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
   const allPages = Math.ceil(count / games.length)
+
+  useEffect(() => {
+    setPage(0)
+  }, [selectedGenre])
 
   useEffect(() => {
     page > 0 ? setEndpoint('/games?page=' + page) : setEndpoint('/games')
