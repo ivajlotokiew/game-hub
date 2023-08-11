@@ -1,5 +1,5 @@
-import React from "react";
-import { SimpleGrid, Text } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { Button, HStack, SimpleGrid, Text } from "@chakra-ui/react";
 import useGames from "../hooks/useGames";
 import GameCard from "./GameCard";
 import GameCardSkeleton from "./GameCardSkeleton";
@@ -11,8 +11,23 @@ interface Props {
 }
 
 const GameGrid = ({ selectedGenre }: Props) => {
-  const { data: games, error, isLoading } = useGames(selectedGenre);
+  const [page, setPage] = useState(0)
+  const [endpoint, setEndpoint] = useState('/games')
+  const { data: games, error, isLoading, count } = useGames(selectedGenre, endpoint);
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+  const allPages = Math.ceil(count / games.length)
+
+  useEffect(() => {
+    page > 0 ? setEndpoint('/games?page=' + page) : setEndpoint('/games')
+  }, [page])
+
+  const setPrevPage = () => {
+    setPage(oldPage => oldPage === 2 ? 0 : oldPage - 1)
+  }
+
+  const setNextPage = () => {
+    setPage(oldPage => oldPage === 0 ? 2 : oldPage + 1)
+  }
 
   return (
     <>
@@ -28,8 +43,12 @@ const GameGrid = ({ selectedGenre }: Props) => {
           </GameCardContainer>
         )}
       </SimpleGrid>
+      <HStack justifyContent={"space-evenly"}>
+        <Button isDisabled={page === 0 ? true : false} onClick={setPrevPage}>Prev</Button>
+        <Text>{page === 0 ? 1 : page} of {allPages}</Text>
+        <Button disabled={false} onClick={setNextPage}>Next</Button>
+      </HStack>
     </>
-
   )
 };
 
