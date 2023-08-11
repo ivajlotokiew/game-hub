@@ -6,23 +6,23 @@ import GameCardSkeleton from "./GameCardSkeleton";
 import GameCardContainer from "./GameCardContainer";
 import { Genre } from "../hooks/useGenre";
 import { Platform } from "../hooks/usePlatforms";
+import { GameQuery } from "../App";
 
 interface Props {
-  selectedGenre: Genre | null;
-  selectedPlatform: Platform | null;
+  gameQuery: GameQuery | null
 }
 
-const GameGrid = ({ selectedGenre, selectedPlatform }: Props) => {
+const GameGrid = ({ gameQuery }: Props) => {
   const [page, setPage] = useState(0)
   const [endpoint, setEndpoint] = useState('/games')
-  const { data: games, error, isLoading, count } = useGames(endpoint, selectedGenre, selectedPlatform)
+  const { data: games, error, isLoading, count } = useGames(endpoint, gameQuery)
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
   const allPages = Math.ceil(count / games.length)
   const nextBtnDisabled = page === allPages || page === 0 && allPages === 1 || Number.isNaN(allPages) ? true : false
 
   useEffect(() => {
     setPage(0)
-  }, [selectedGenre])
+  }, [gameQuery?.genre])
 
   useEffect(() => {
     page > 0 ? setEndpoint('/games?page=' + page) : setEndpoint('/games')
