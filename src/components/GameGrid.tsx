@@ -5,17 +5,20 @@ import GameCard from "./GameCard";
 import GameCardSkeleton from "./GameCardSkeleton";
 import GameCardContainer from "./GameCardContainer";
 import { Genre } from "../hooks/useGenre";
+import { Platform } from "../hooks/usePlatforms";
 
 interface Props {
-  selectedGenre: Genre | null
+  selectedGenre: Genre | null;
+  selectedPlatform: Platform | null;
 }
 
-const GameGrid = ({ selectedGenre }: Props) => {
+const GameGrid = ({ selectedGenre, selectedPlatform }: Props) => {
   const [page, setPage] = useState(0)
   const [endpoint, setEndpoint] = useState('/games')
-  const { data: games, error, isLoading, count } = useGames(selectedGenre, endpoint)
+  const { data: games, error, isLoading, count } = useGames(endpoint, selectedGenre, selectedPlatform)
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
   const allPages = Math.ceil(count / games.length)
+  const nextBtnDisabled = page === allPages || page === 0 && allPages === 1 || Number.isNaN(allPages) ? true : false
 
   useEffect(() => {
     setPage(0)
@@ -49,8 +52,8 @@ const GameGrid = ({ selectedGenre }: Props) => {
       </SimpleGrid>
       <HStack justifyContent={"space-evenly"}>
         <Button isDisabled={page === 0 ? true : false} onClick={setPrevPage}>Prev</Button>
-        <Text>{page === 0 ? 1 : page} of {allPages}</Text>
-        <Button disabled={false} onClick={setNextPage}>Next</Button>
+        <Text>{page === 0 ? 1 : page} of {Number.isNaN(allPages) ? 1 : allPages}</Text>
+        <Button isDisabled={nextBtnDisabled} onClick={setNextPage}>Next</Button>
       </HStack>
     </>
   )
